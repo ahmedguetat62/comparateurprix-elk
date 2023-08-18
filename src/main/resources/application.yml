@@ -1,0 +1,4 @@
+spring:
+  elasticsearch:
+    rest:
+      nodes: http://localhost:9200

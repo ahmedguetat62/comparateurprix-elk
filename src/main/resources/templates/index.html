@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Merchand List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #66b3ff; /* Light blue background color */
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            padding: 5px;
+        }
+
+        /* Style for the search button */
+        #searchButton {
+            background-color: #4CAF50; /* Green background color */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Style for the search input */
+        #searchInput {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>Merchand Management</h1>
+    <nav>
+        <a href="/">Merchand List</a> |
+        <a href="search">Search</a>
+        <div class="search-container">
+            <input id="searchInput" class="search-input" type="text" placeholder="Enter SKU to search">
+            <button id="searchButton">Search</button>
+        </div>
+    </nav>
+</div>
+<div class="container">
+    <h2>Merchand List</h2>
+    <table>
+        <tr>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Product URL</th>
+            <th>Image URL</th>
+            <th>Price</th>
+            <th>Currency</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Variant Group</th>
+            <th>Variant Size</th>
+            <th>Color</th>
+            <th>Material</th>
+            <th>Model</th>
+            <th>Age Range</th>
+            <th>Gender</th>
+            <!-- Add more columns as needed -->
+        </tr>
+        <tbody id="merchandTableBody"></tbody>
+    </table>
+</div>
+
+
+<script>
+    // Fetch data from the /api/getData endpoint
+    fetch('/api/getData')
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.getElementById('merchandTableBody');
+            data.forEach(merchand => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                        <td>${merchand.sku}</td>
+                        <td>${merchand.productName}</td>
+                        <td>${merchand.productUrl}</td>
+                        <td><img src="${merchand.imageUrl}" height="80px" width="80px%"/></td>
+                        <td>${merchand.price}</td>
+                        <td>${merchand.currency}</td>
+                        <td>${merchand.brand}</td>
+                        <td>${merchand.category}</td>
+                        <td>${merchand.variantGroup}</td>
+                        <td>${merchand.variantSize}</td>
+                        <td>${merchand.color}</td>
+                        <td>${merchand.material}</td>
+                        <td>${merchand.model}</td>
+                        <td>${merchand.ageRange}</td>
+                        <td>${merchand.gender}</td>
+                        <!-- Add more columns as needed -->
+                    `;
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+    // Add event listener to the search button
+    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.getElementById('searchInput');
+
+    searchButton.addEventListener('click', () => {
+        const searchTerm = searchInput.value;
+        // Make a request to the /api/search endpoint with the input value as a parameter
+        fetch(`/api/search?sku=${searchTerm}`)
+            .then(response => response.json())
+            .then(merchand => {
+                // Redirect to the search-result.html page with the search result as a query parameter
+                window.location.href = `/search-results?sku=${searchTerm}`;
+            })
+            .catch(error => console.error('Error fetching search result:', error));
+    });
+</script>
+
+</body>
+</html>
